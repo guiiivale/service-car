@@ -18,8 +18,14 @@ class CompanyCategory extends Model
         'description',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function companies()
     {
-        return $this->belongsToMany(Company::class, 'company_company_category');
+        return $this->hasMany(User::class, 'company_category_id');
     }
 }

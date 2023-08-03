@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     
-
     /**
      * The attributes that are mass assignable.
      *
@@ -23,6 +23,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'user_type_id',
+        'company_category_id',
     ];
 
     /**
@@ -45,6 +47,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
+
     public function services()
     {
         return $this->belongsToMany(Service::class, 'service_user')
@@ -56,8 +63,8 @@ class User extends Authenticatable
         return $this->belongsTo(UserType::class);
     }
 
-    public function company()
+    public function companyCategory()
     {
-        return $this->belongsTo(CompanyCategory::class);
+        return $this->belongsTo(CompanyCategory::class, 'company_category_id');
     }
 }
