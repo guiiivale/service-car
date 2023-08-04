@@ -27,8 +27,8 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required',
-            'password_confirmation' => 'required|same:password',
+            'password' => 'required|min:8',
+            'password_confirmation' => 'required|min:8|same:password',
             'user_type_id' => 'required|exists:user_types,id',
             'company_category_id' => 'required_if:user_type_id,1|exists:company_categories,id',
         ];
@@ -56,6 +56,7 @@ class RegisterRequest extends FormRequest
             'email.email' => 'The email field must be a valid email address',
             'password_confirmation.required' => 'The password confirmation field is required',
             'password_confirmation.same' => 'The password confirmation field must match the password field',
+            'password.min' => 'The password field must be at least 8 characters',
             'name.required' => 'The name field is required',
             'user_type_id.required' => 'The user type field is required',
             'user_type_id.exists' => 'The selected user type is invalid',

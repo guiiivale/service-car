@@ -26,4 +26,5 @@ Route::prefix('/user')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/get', [UserController::class, 'get']);
     Route::get('/all', [UserController::class, 'getAll']);
+    Route::put('/change-password', [UserController::class, 'changePassword']);
 });

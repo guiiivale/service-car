@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\GetAllUsersRequest;
 use App\Http\Requests\GetUserRequest;
 use App\Models\CompanyCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -51,6 +53,35 @@ class UserController extends Controller
             'success' => true,
             'message' => 'Get user success',
             'users' => $user,
+        ]);
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $data = $request->validated();
+        
+        $user = User::find($data['user_id']);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 404);
+        }
+
+        if(!Hash::check($data['password'], $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Wrong password, please try again.',
+            ], 400);
+        }
+
+        $user->password = $data['new_password'];
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Change password success',
         ]);
     }
 }
