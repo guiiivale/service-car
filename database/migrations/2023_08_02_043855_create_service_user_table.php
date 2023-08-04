@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('service_id');
             $table->decimal('value', 10, 2);
-            $table->integer('duration'); // Novo campo de duração, permitindo valores nulos
+            $table->integer('duration');
             $table->timestamps();
             $table->softDeletes();
 

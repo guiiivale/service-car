@@ -6,7 +6,7 @@ use App\Models\CompanyCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CompanyCategoriesSeeder extends Seeder
+class CompanyCategoriesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

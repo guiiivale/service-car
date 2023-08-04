@@ -10,6 +10,16 @@ class Service extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'suggested_price',
+        'suggested_duration',
+        'category_id',
+        'is_available',
+        'image',
+    ];
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'service_user');

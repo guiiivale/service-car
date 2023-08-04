@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class ChangePasswordRequest extends FormRequest
+class GetServiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,7 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:users,id',
-            'password' => 'required',
-            'new_password' => 'required|string|min:8',
+            'id' => 'required|exists:services,id',
         ];
     }
 
@@ -47,13 +45,8 @@ class ChangePasswordRequest extends FormRequest
     public function messages()
     {
         return [
-            'id.required' => 'User id is required',
-            'id.integer' => 'User id must be integer',
-            'id.exists' => 'User id not found',
-            'password.required' => 'Password is required',
-            'new_password.required' => 'New password is required',
-            'new_password.string' => 'New password must be string',
-            'new_password.min' => 'New password must be at least 8 characters',
+            'id.required' => 'The id field is required',
+            'id.exists' => 'The id field must be a valid user id',
         ];
     }
 }

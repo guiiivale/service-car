@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,4 +29,13 @@ Route::prefix('/user')->group(function () {
     Route::get('/get', [UserController::class, 'get']);
     Route::get('/all', [UserController::class, 'getAll']);
     Route::put('/change-password', [UserController::class, 'changePassword']);
+});
+
+Route::prefix('/services')->group(function () {
+    Route::get('/get', [ServicesController::class, 'get']);
+    Route::get('/all', [ServicesController::class, 'getAll']);
+});
+
+Route::prefix('/company')->group(function () {
+    Route::post('/select-services', [CompanyController::class, 'selectServices']);
 });

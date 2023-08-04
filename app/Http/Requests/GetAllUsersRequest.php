@@ -24,8 +24,9 @@ class GetAllUsersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|in:all,companies,users,company_categories',
+            'type' => 'required|in:all,companies,users,service,company_categories',
             'company_category_id' => 'required_if:type,companies_categories|exists:company_categories,id',
+            'service_id' => 'required_if:type,service|exists:services,id',
         ];
     }
 
@@ -50,6 +51,8 @@ class GetAllUsersRequest extends FormRequest
             'type.in' => 'The type field must be one of these: all, companies, users',
             'company_category_id.required_if' => 'The company_category_id field is required when type is companies',
             'company_category_id.exists' => 'The company_category_id field must be a valid company category id',
+            'service_id.required_if' => 'The service_id field is required when type is service',
+            'service_id.exists' => 'The service_id field must be a valid service id',
         ];
     }
 }

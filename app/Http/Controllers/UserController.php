@@ -6,6 +6,7 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\GetAllUsersRequest;
 use App\Http\Requests\GetUserRequest;
 use App\Models\CompanyCategory;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,10 +17,11 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $users = User::with('userType', 'companyCategory')->get();
-        if($data['type'] == 'companies') $users = User::where('user_type_id', 1)->with('userType', 'companyCategory')->get();
-        if($data['type'] == 'users') $users = User::where('user_type_id', 2)->with('userType', 'companyCategory')->get();
-        if($data['type'] == 'company_categories') $users = CompanyCategory::find($data['company_category_id'])->companies()->with('userType', 'companyCategory')->get();
+        $users = User::with('userType', 'companyCategory', 'services')->get();
+        if($data['type'] == 'companies') $users = User::where('user_type_id', 1)->with('userType', 'companyCategory', 'services')->get();
+        if($data['type'] == 'users') $users = User::where('user_type_id', 2)->with('userType', 'companyCategory', 'services')->get();
+        if($data['type'] == 'company_categories') $users = CompanyCategory::find($data['company_category_id'])->companies()->with('userType', 'companyCategory', 'services')->get();
+        if($data['type'] == 'service') $users = Service::find($data['service_id'])->users()->with('userType', 'companyCategory', 'services')->get();
 
         if($users->isEmpty()) {
             return response()->json([
@@ -39,8 +41,8 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if (isset($data['email'])) $user = User::where('email', $data['email'])->with('userType', 'companyCategory')->get();
-        if (isset($data['id'])) $user = User::with('userType', 'companyCategory')->find($data['id']);
+        if (isset($data['email'])) $user = User::where('email', $data['email'])->with('userType', 'companyCategory', 'services')->get();
+        if (isset($data['id'])) $user = User::with('userType', 'companyCategory', 'services')->find($data['id']);
 
         if (!$user) {
             return response()->json([
@@ -60,7 +62,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
         
-        $user = User::find($data['user_id']);
+        $user = User::find($data['id']);
 
         if (!$user) {
             return response()->json([
