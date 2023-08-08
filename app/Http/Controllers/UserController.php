@@ -7,6 +7,7 @@ use App\Http\Requests\GetAllUsersRequest;
 use App\Http\Requests\GetUserRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\ResetTokenRequest;
+use App\Jobs\ClearUserExpiredTokenJob;
 use Illuminate\Support\Str;
 use App\Models\CompanyCategory;
 use App\Models\Service;
@@ -104,13 +105,15 @@ class UserController extends Controller
             ], 404);
         }
 
-        $randomPassword = Str::random(16);
-        $user->reset_password_token = $randomPassword;
+        $randomToken = Str::random(16);
+        $user->reset_password_token = $randomToken;
         $user->save();
 
-        $data2 = ['password' => $randomPassword];
+        ClearUserExpiredTokenJob::dispatch($user->id)->delay(now()->addMinutes(30));
 
-        Mail::send('emails.reset_password', $data2, function ($message) use ($user) {
+        $data2 = ['token' => $randomToken];
+
+        Mail::send('emails.reset_token', $data2, function ($message) use ($user) {
             $message->to($user->email);
             $message->subject('Seu token para trocar a senha - Service Car');
         });
