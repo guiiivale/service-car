@@ -15,7 +15,7 @@ class UserActivityHistory extends Model
     protected $fillable = [
         'user_id',
         'service_id',
-        'car_id',
+        'vehicle_id',
         'company_id',
         'value',
     ];
@@ -30,9 +30,9 @@ class UserActivityHistory extends Model
         return $this->belongsTo(Service::class);
     }
 
-    public function car()
+    public function vehicle()
     {
-        return $this->belongsTo(Car::class);
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function company()

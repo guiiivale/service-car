@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cars', function (Blueprint $table) {
+        Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['car', 'motorcycle', 'truck', 'bus', 'other']);
             $table->string('model');
             $table->string('make');
             $table->string('year');
             $table->string('color');
             $table->string('plate');
             $table->string('mileage')->nullable();
+            $table->string('photo')->nullable();
             $table->string('fuel_type')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -32,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cars');
+        Schema::dropIfExists('vehicles');
     }
 };

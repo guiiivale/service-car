@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Car extends Model
+class Vehicle extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'type',
         'model',
         'make', // 'make' is the same as 'brand'
         'year',
@@ -18,6 +19,7 @@ class Car extends Model
         'plate',
         'mileage',
         'fuel_type',
+        'photo',
         'user_id',
     ];
 

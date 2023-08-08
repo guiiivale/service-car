@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'user_type_id',
         'company_category_id',
+        'reset_password_token',
     ];
 
     /**
@@ -35,6 +36,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'reset_password_token',
     ];
 
     /**
@@ -52,10 +54,9 @@ class User extends Authenticatable
         $this->attributes['password'] = Hash::make($value);
     }
 
-    public function services()
+    public function vehicles()
     {
-        return $this->belongsToMany(Service::class, 'service_user')
-            ->withPivot('value', 'duration'); 
+        return $this->hasMany(Vehicle::class);
     }
 
     public function userType()
@@ -66,5 +67,10 @@ class User extends Authenticatable
     public function companyCategory()
     {
         return $this->belongsTo(CompanyCategory::class, 'company_category_id');
+    }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'service_user')->withPivot('value', 'duration');
     }
 }
