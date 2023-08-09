@@ -7,6 +7,7 @@ use App\Http\Requests\GetAllUsersRequest;
 use App\Http\Requests\GetUserRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\ResetTokenRequest;
+use App\Http\Requests\UserSaveRequest;
 use App\Jobs\ClearUserExpiredTokenJob;
 use Illuminate\Support\Str;
 use App\Models\CompanyCategory;
@@ -22,11 +23,19 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $users = User::with('userType', 'companyCategory', 'services')->get();
-        if ($data['type'] == 'companies') $users = User::where('user_type_id', 1)->with('userType', 'companyCategory', 'services')->get();
-        if ($data['type'] == 'users') $users = User::where('user_type_id', 2)->with('userType', 'companyCategory', 'vehicles')->get();
-        if ($data['type'] == 'company_categories') $users = CompanyCategory::find($data['company_category_id'])->companies()->with('userType', 'companyCategory', 'services')->get();
-        if ($data['type'] == 'service') $users = Service::find($data['service_id'])->users()->with('userType', 'companyCategory', 'services')->get();
+        $users = User::with('userType', 'companyCategory', 'services', 'addresses', 'vehicles');
+
+        if ($data['type'] == 'companies') {
+            $users = $users->companies()->get();
+        } elseif ($data['type'] == 'users') {
+            $users = $users->users()->get();
+        } elseif ($data['type'] == 'company_categories') {
+            $companyCategory = CompanyCategory::find($data['company_category_id']);
+            $users = $companyCategory->companies()->with('userType', 'companyCategory', 'services', 'addresses')->get();
+        } elseif ($data['type'] == 'service') {
+            $service = Service::find($data['service_id']);
+            $users = $service->users()->with('userType', 'companyCategory', 'services', 'addresses')->get();
+        }
 
         if ($users->isEmpty()) {
             return response()->json([
@@ -46,8 +55,8 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if (isset($data['email'])) $user = User::where('email', $data['email'])->with('userType', 'companyCategory', 'services', 'vehicles')->get();
-        if (isset($data['id'])) $user = User::with('userType', 'companyCategory', 'services', 'vehicles')->find($data['id']);
+        if (isset($data['email'])) $user = User::where('email', $data['email'])->with('userType', 'companyCategory', 'services', 'vehicles', 'addresses')->get();
+        if (isset($data['id'])) $user = User::with('userType', 'companyCategory', 'services', 'vehicles', 'addresses')->find($data['id']);
 
         if (!$user) {
             return response()->json([
@@ -151,6 +160,46 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Password changed successfully.',
+        ]);
+    }
+
+    public function save(UserSaveRequest $request)
+    {
+        $data = $request->validated();
+
+        $user = User::find($data['id'])->everything()->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.',
+            ], 404);
+        }
+
+        $user->update($data);
+
+        if (isset($data['address'])) {
+            $addressData = $data['address'];
+            if (isset($addressData['id'])) {
+                $address = $user->addresses()->find($addressData['id']);
+                if ($address) {
+                    $address->update($addressData);
+                }
+            } else {
+                $address = $user->addresses()->create($addressData);
+            }
+        
+            if ($addressData['is_main']) {
+                $user->addresses()->where('id', '!=', $address->id)->update(['is_main' => false]);
+            }
+        }
+
+        $user = User::find($data['id'])->everything()->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User updated successfully.',
+            'user' => $user,
         ]);
     }
 }

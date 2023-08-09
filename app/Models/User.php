@@ -73,4 +73,24 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Service::class, 'service_user')->withPivot('value', 'duration');
     }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function scopeCompanies($query)
+    {
+        return $query->where('user_type_id', 1)->with('userType', 'companyCategory', 'services', 'addresses');
+    }
+
+    public function scopeUsers($query)
+    {
+        return $query->where('user_type_id', 2)->with('userType', 'companyCategory', 'vehicles', 'addresses');
+    }
+
+    public function scopeEverything($query)
+    {
+        return $query->with('userType', 'companyCategory', 'services', 'vehicles', 'addresses');
+    }
 }

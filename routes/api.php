@@ -29,6 +29,7 @@ Route::prefix('/user')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/get', [UserController::class, 'get']);
     Route::get('/all', [UserController::class, 'getAll']);
+    Route::put('/save', [UserController::class, 'save']);
     Route::put('/change-password', [UserController::class, 'changePassword']);
     Route::put('/reset-token', [UserController::class, 'resetToken']);
     Route::put('/reset-password', [UserController::class, 'resetPassword']);
