@@ -27,6 +27,7 @@ class UserSaveRequest extends FormRequest
             'id' => 'required|exists:users,id',
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|unique:users,email',
+            'description' => 'nullable',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|array',
             'address.id' => 'nullable|exists:addresses,id',

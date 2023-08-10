@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('service_id');
             $table->decimal('value', 10, 2);
             $table->integer('duration');
+            $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

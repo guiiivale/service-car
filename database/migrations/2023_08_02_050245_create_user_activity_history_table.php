@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('user_activity_history', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('vehicle_id');
-            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('status_id');
+            $table->boolean('is_finished')->default(false);
             $table->decimal('value', 10, 2);
             $table->timestamps();
             $table->softDeletes();

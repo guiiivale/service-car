@@ -71,7 +71,7 @@ class User extends Authenticatable
 
     public function services()
     {
-        return $this->belongsToMany(Service::class, 'service_user')->withPivot('value', 'duration');
+        return $this->belongsToMany(Service::class, 'service_user')->withPivot('value', 'duration', 'description');
     }
 
     public function addresses()

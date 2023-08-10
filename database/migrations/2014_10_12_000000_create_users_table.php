@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('reset_password_token')->nullable();
             $table->string('phone')->nullable();
+            $table->text('description')->nullable();
 
             $table->unsignedBigInteger('user_type_id');
             $table->foreign('user_type_id')->references('id')->on('user_types')->onDelete('cascade');
