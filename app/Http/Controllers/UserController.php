@@ -23,25 +23,34 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $users = User::with('userType', 'companyCategory', 'services', 'addresses', 'vehicles');
+        $usersQuery = User::with('userType', 'companyCategory', 'services', 'addresses', 'vehicles', 'reviews');
 
         if ($data['type'] == 'companies') {
-            $users = $users->companies()->get();
+            $usersQuery->companies();
         } elseif ($data['type'] == 'users') {
-            $users = $users->users()->get();
+            $usersQuery->users();
         } elseif ($data['type'] == 'company_categories') {
             $companyCategory = CompanyCategory::find($data['company_category_id']);
-            $users = $companyCategory->companies()->with('userType', 'companyCategory', 'services', 'addresses')->get();
+            $usersQuery->companyCategory($companyCategory);
         } elseif ($data['type'] == 'service') {
             $service = Service::find($data['service_id']);
-            $users = $service->users()->with('userType', 'companyCategory', 'services', 'addresses')->get();
+            $usersQuery->service($service);
         }
+
+        $users = $usersQuery->get();
 
         if ($users->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Users not found',
             ], 404);
+        }
+
+        foreach ($users as $user) {
+            if ($user->reviews->isNotEmpty()) {
+                $avgRating = $user->reviews->avg('rating');
+                $user->avg_rating = number_format($avgRating, 1);
+            }
         }
 
         return response()->json([
@@ -55,14 +64,28 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if (isset($data['email'])) $user = User::where('email', $data['email'])->with('userType', 'companyCategory', 'services', 'vehicles', 'addresses')->get();
-        if (isset($data['id'])) $user = User::with('userType', 'companyCategory', 'services', 'vehicles', 'addresses')->find($data['id']);
+        $query = User::with('userType', 'companyCategory', 'services', 'vehicles', 'addresses', 'reviews', 'userReviews');
+
+        if (isset($data['email'])) {
+            $query->where('email', $data['email']);
+        }
+        
+        if (isset($data['id'])) {
+            $query->where('id', $data['id']);
+        }
+
+        $user = $query->first();
 
         if (!$user) {
             return response()->json([
                 'success' => false,
                 'message' => 'User not found',
             ], 404);
+        }
+
+        if ($user->reviews->isNotEmpty()) {
+            $avgRating = $user->reviews->avg('rating');
+            $user->avg_rating = number_format($avgRating, 1);
         }
 
         return response()->json([

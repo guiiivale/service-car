@@ -6,8 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-
-class EditUserVehicleRequest extends FormRequest
+class GetAllCompanyReviewsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +24,7 @@ class EditUserVehicleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
-            'type' => 'nullable|in:car,motorcycle,truck,bus,other',
-            'model' => 'nullable|string',
-            'make' => 'nullable|string',
-            'year' => 'nullable|string',
-            'color' => 'nullable|string',
-            'plate' => 'required|string',
-            'new_plate' => 'nullable|string',
-            'mileage' => 'nullable|string',
-            'fuel_type' => 'nullable|string',
+            'company_id' => 'required|exists:users,id',
         ];
     }
 
@@ -55,10 +45,8 @@ class EditUserVehicleRequest extends FormRequest
     public function messages()
     {
         return [
-            'user_id.required' => 'User id is required',
-            'user_id.exists' => 'User id does not exist',
-            'type.in' => 'Type must be one of the following: car, motorcycle, truck, bus, other',
-            'plate.required' => 'Plate is required',
+            'company_id.required' => 'Company id is required',
+            'company_id.exists' => 'Company id does not exist',
         ];
     }
 }

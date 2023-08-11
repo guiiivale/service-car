@@ -93,4 +93,14 @@ class User extends Authenticatable
     {
         return $query->with('userType', 'companyCategory', 'services', 'vehicles', 'addresses');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'company_id');
+    }
+
+    public function userReviews()
+    {
+        return $this->hasMany(Review::class, 'user_id');
+    }
 }

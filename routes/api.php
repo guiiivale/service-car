@@ -3,6 +3,7 @@
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehiclesController;
@@ -49,4 +50,10 @@ Route::prefix('/services')->group(function () {
 Route::prefix('/company')->group(function () {
     Route::post('/select-services', [CompanyController::class, 'selectServices']);
     Route::delete('/remove-services', [CompanyController::class, 'removeServices']);
+});
+
+Route::prefix('/review')->group(function () {
+    Route::post('/add', [ReviewController::class, 'add']);
+    Route::get('/get', [ReviewController::class, 'get']);
+    Route::delete('/remove', [ReviewController::class, 'remove']);
 });
