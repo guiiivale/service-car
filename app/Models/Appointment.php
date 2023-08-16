@@ -4,23 +4,31 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserActivityHistory extends Model
+class Appointment extends Model
 {
-    use HasFactory, SoftDeletes;
-
-    protected $table = 'user_activity_histories';
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
+        'company_id',
         'service_id',
         'vehicle_id',
-        'company_id',
-        'value',
+        'scheduled_datetime',
+        'status',
+        'notes',
+    ];
+
+    protected $dates = [
+        'scheduled_datetime',
     ];
 
     public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function company()
     {
         return $this->belongsTo(User::class);
     }
@@ -35,18 +43,8 @@ class UserActivityHistory extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function company()
+    public function activities()
     {
-        return $this->belongsTo(Company::class);
-    }
-
-    public function serviceProblems()
-    {
-        return $this->hasMany(ServiceProblem::class);
-    }
-
-    public function appointment()
-    {
-        return $this->belongsTo(Appointment::class);
+        return $this->hasOne(UserActivityHistory::class);
     }
 }
