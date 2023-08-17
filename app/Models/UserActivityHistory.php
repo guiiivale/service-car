@@ -13,32 +13,10 @@ class UserActivityHistory extends Model
     protected $table = 'user_activity_histories';
 
     protected $fillable = [
-        'user_id',
-        'service_id',
-        'vehicle_id',
-        'company_id',
+        'appointment_id',
+        'is_finished',
         'value',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function service()
-    {
-        return $this->belongsTo(Service::class);
-    }
-
-    public function vehicle()
-    {
-        return $this->belongsTo(Vehicle::class);
-    }
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
 
     public function serviceProblems()
     {

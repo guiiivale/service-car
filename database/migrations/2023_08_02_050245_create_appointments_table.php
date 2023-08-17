@@ -17,12 +17,13 @@ return new class extends Migration
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('vehicle_id');
+            $table->unsignedBigInteger('status_id');
             $table->dateTime('scheduled_datetime');
-            $table->enum('status', ['Scheduled', 'InProgress', 'Completed', 'Cancelled'])->default('Scheduled');
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
+            
+            $table->foreign('status_id')->references('id')->on('status')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('company_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');

@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             CompanyCategoriesTableSeeder::class,
             ServiceCategoriesTableSeeder::class,
             ServicesTableSeeder::class,
+            StatusTableSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
 
