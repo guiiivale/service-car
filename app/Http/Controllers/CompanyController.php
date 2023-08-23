@@ -7,22 +7,17 @@ use App\Http\Requests\RemoveServicesRequest;
 use App\Http\Requests\SelectServicesRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Enums\UserTypes;
 
 class CompanyController extends Controller
 {
     public function selectServices(SelectServicesRequest $request)
     {
         $data = $request->validated();
-        $user = User::find($data['user_id']);
 
-        if (!$user || $user->user_type_id != 1) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not a company',
-            ], 400);
-        }
+        $company = $request->company;
 
-        $existingServices = $user->services->pluck('id')->toArray();
+        $existingServices = $company->services->pluck('id')->toArray();
         $servicesToSync = [];
 
         foreach ($data['services'] as $serviceData) {
@@ -44,7 +39,7 @@ class CompanyController extends Controller
             ];
         }
 
-        $user->services()->sync($servicesToSync);
+        $company->services()->sync($servicesToSync);
 
         return response()->json([
             'success' => true,
@@ -56,16 +51,9 @@ class CompanyController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::find($data['user_id']);
+        $company = $request->company;
 
-        if (!$user || $user->user_type_id != 1) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not a company',
-            ], 400);
-        }
-
-        $user->services()->detach($data['services']);
+        $company->services()->detach($data['services']);
 
         return response()->json([
             'success' => true,

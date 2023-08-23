@@ -71,4 +71,9 @@ class AddUserVehicleRequest extends FormRequest
             'fuel_type.string' => 'Fuel type must be a string',
         ];
     }
+
+    public function getCustomer()
+    {
+        return $this->user();
+    }
 }

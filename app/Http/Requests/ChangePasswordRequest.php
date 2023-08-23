@@ -24,7 +24,7 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:users,id',
+            'user_id' => 'required|integer|exists:users,id',
             'password' => 'required',
             'new_password' => 'required|string|min:8',
         ];
@@ -47,9 +47,9 @@ class ChangePasswordRequest extends FormRequest
     public function messages()
     {
         return [
-            'id.required' => 'User id is required',
-            'id.integer' => 'User id must be integer',
-            'id.exists' => 'User id not found',
+            'user_id.required' => 'User id is required',
+            'user_id.integer' => 'User id must be integer',
+            'user_id.exists' => 'User id not found',
             'password.required' => 'Password is required',
             'new_password.required' => 'New password is required',
             'new_password.string' => 'New password must be string',

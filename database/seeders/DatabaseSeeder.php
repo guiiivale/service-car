@@ -21,11 +21,5 @@ class DatabaseSeeder extends Seeder
             ServicesTableSeeder::class,
             StatusTableSeeder::class,
         ]);
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }

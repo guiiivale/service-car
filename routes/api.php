@@ -25,6 +25,49 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('valid.user')->group(function () {
+
+    Route::middleware('valid.customer')->group(function () {
+        Route::prefix('/vehicles')->group(function () {
+            Route::post('/add', [VehiclesController::class, 'add']);
+            Route::get('/all', [VehiclesController::class, 'getAll']);
+            
+            Route::middleware('valid.vehicle')->group(function () {
+                Route::put('/edit', [VehiclesController::class, 'edit']);
+                Route::get('/get', [VehiclesController::class, 'get']);
+                Route::delete('/remove', [VehiclesController::class, 'remove']);
+            });
+        });
+
+        Route::middleware('valid.company')->group(function () {
+            Route::prefix('/review')->group(function () {
+                Route::post('/add', [ReviewController::class, 'add']);
+            });
+            Route::middleware('valid.vehicle', 'valid.service')->group(function () {
+                Route::prefix('/appointments')->group(function () {
+                });
+            });
+        });
+
+    });
+    
+    Route::prefix('/user')->group(function () {
+        Route::put('/reset-token', [UserController::class, 'resetToken']);
+        Route::put('/reset-password', [UserController::class, 'resetPassword']);
+    });
+});
+
+Route::middleware('valid.company')->group(function () {
+    Route::prefix('/company')->group(function () {
+        Route::post('/select-services', [CompanyController::class, 'selectServices']);
+        Route::delete('/remove-services', [CompanyController::class, 'removeServices']);
+    });
+    Route::prefix('/review')->group(function () {
+        Route::get('/get', [ReviewController::class, 'get']);
+    });
+});
+
+
 Route::prefix('/user')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/login', [LoginController::class, 'login']);
@@ -32,28 +75,9 @@ Route::prefix('/user')->group(function () {
     Route::get('/all', [UserController::class, 'getAll']);
     Route::put('/save', [UserController::class, 'save']);
     Route::put('/change-password', [UserController::class, 'changePassword']);
-    Route::put('/reset-token', [UserController::class, 'resetToken']);
-    Route::put('/reset-password', [UserController::class, 'resetPassword']);
-});
-
-Route::prefix('/vehicles')->group(function () {
-    Route::post('/add', [VehiclesController::class, 'add']);
-    Route::put('/edit', [VehiclesController::class, 'edit']);
-    Route::delete('/remove', [VehiclesController::class, 'remove']);
 });
 
 Route::prefix('/services')->group(function () {
     Route::get('/get', [ServicesController::class, 'get']);
     Route::get('/all', [ServicesController::class, 'getAll']);
-});
-
-Route::prefix('/company')->group(function () {
-    Route::post('/select-services', [CompanyController::class, 'selectServices']);
-    Route::delete('/remove-services', [CompanyController::class, 'removeServices']);
-});
-
-Route::prefix('/review')->group(function () {
-    Route::post('/add', [ReviewController::class, 'add']);
-    Route::get('/get', [ReviewController::class, 'get']);
-    Route::delete('/remove', [ReviewController::class, 'remove']);
 });

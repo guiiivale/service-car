@@ -14,41 +14,13 @@ class ReviewController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::find($data['user_id']);
+        $customer = $request->customer;
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not found',
-            ], 404);
-        }
-
-        if($user->user_type_id != 2) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not a customer',
-            ], 400);
-        }
-
-        $company = User::find($data['company_id']);
-
-        if (!$company) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Company not found',
-            ], 404);
-        }
-
-        if($company->user_type_id != 1) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not a company',
-            ], 400);
-        }
+        $company = $request->company;
 
         $review = new Review();
         $review->company()->associate($company);
-        $review->user()->associate($user);
+        $review->user()->associate($customer);
         $review->rating = $data['rating'];
         $review->review = $data['review'] ?? null;
         $review->save();
@@ -70,21 +42,7 @@ class ReviewController extends Controller
     {
         $data = $request->validated();
 
-        $company = User::find($data['company_id']);
-
-        if (!$company) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Company not found',
-            ], 404);
-        }
-
-        if($company->user_type_id != 1) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not a company',
-            ], 400);
-        }
+        $company = $request->company;
 
         $reviews = $company->reviews()->with('user')->get();
 

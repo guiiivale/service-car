@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
+use App\Enums\UserTypes;
 
 class User extends Authenticatable
 {
@@ -81,12 +82,12 @@ class User extends Authenticatable
 
     public function scopeCompanies($query)
     {
-        return $query->where('user_type_id', 1)->with('userType', 'companyCategory', 'services', 'addresses');
+        return $query->where('user_type_id', UserTypes::COMPANY_ID)->with('userType', 'companyCategory', 'services', 'addresses');
     }
 
     public function scopeUsers($query)
     {
-        return $query->where('user_type_id', 2)->with('userType', 'companyCategory', 'vehicles', 'addresses');
+        return $query->where('user_type_id', UserTypes::USER_ID)->with('userType', 'companyCategory', 'vehicles', 'addresses');
     }
 
     public function scopeEverything($query)

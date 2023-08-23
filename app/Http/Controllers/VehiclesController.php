@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserTypes;
 use App\Http\Requests\AddUserVehicleRequest;
 use App\Http\Requests\EditUserVehicleRequest;
 use App\Http\Requests\RemoveUserVehicleRequest;
 use App\Models\User;
+
 use Illuminate\Http\Request;
 
 class VehiclesController extends Controller
@@ -14,29 +16,16 @@ class VehiclesController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::find($data['user_id']);
-        if(!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not found',
-            ], 404);
-        }
-        
-        if($user->user_type_id != 2) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not a customer',
-            ], 400);
-        }
+        $customer = $request->customer;
 
-        if($user->vehicles()->where('plate', $data['plate'])->first()) {
+        if($customer->vehicles()->where('plate', $data['plate'])->first()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Vehicle with this plate already exists',
             ], 400);
         }
 
-        $vehicle = $user->vehicles()->create([
+        $vehicle = $customer->vehicles()->create([
             'type' => $data['type'],
             'model' => $data['model'],
             'make' => $data['make'],
@@ -58,28 +47,7 @@ class VehiclesController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::find($data['user_id']);
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not found',
-            ], 404);
-        }
-
-        if ($user->user_type_id != 2) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not a customer',
-            ], 400);
-        }
-
-        $vehicle = $user->vehicles()->where('plate', $data['plate'])->first();
-        if (!$vehicle) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Vehicle not found',
-            ], 404);
-        }
+        $vehicle = $request->vehicle;
 
         $vehicle->update([
             'type' => $data['type'] ?? $vehicle->type,
@@ -101,30 +69,7 @@ class VehiclesController extends Controller
 
     public function remove(RemoveUserVehicleRequest $request)
     {
-        $data = $request->validated();
-
-        $user = User::find($data['user_id']);
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not found',
-            ], 404);
-        }
-
-        if ($user->user_type_id != 2) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User is not a customer',
-            ], 400);
-        }
-
-        $vehicle = $user->vehicles()->where('plate', $data['plate'])->first();
-        if (!$vehicle) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Vehicle not found',
-            ], 404);
-        }
+        $vehicle = $request->vehicle;
 
         $vehicle->delete();
 
@@ -134,4 +79,27 @@ class VehiclesController extends Controller
         ]);
     }
 
+    public function getAll(Request $request)
+    {
+        $customer = $request->user;
+
+        $vehicles = $customer->vehicles()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Get vehicles success',
+            'vehicles' => $vehicles,
+        ]);
+    }
+
+    public function get(Request $request)
+    {
+        $vehicle = $request->vehicle;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Get vehicle success',
+            'vehicle' => $vehicle,
+        ]);
+    }
 }

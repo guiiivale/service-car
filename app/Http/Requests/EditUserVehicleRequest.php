@@ -26,12 +26,12 @@ class EditUserVehicleRequest extends FormRequest
     {
         return [
             'user_id' => 'required|exists:users,id',
+            'vehicle_id' => 'required|exists:vehicles,id',
             'type' => 'nullable|in:car,motorcycle,truck,bus,other',
             'model' => 'nullable|string',
             'make' => 'nullable|string',
             'year' => 'nullable|string',
             'color' => 'nullable|string',
-            'plate' => 'required|string',
             'new_plate' => 'nullable|string',
             'mileage' => 'nullable|string',
             'fuel_type' => 'nullable|string',
@@ -58,7 +58,8 @@ class EditUserVehicleRequest extends FormRequest
             'user_id.required' => 'User id is required',
             'user_id.exists' => 'User id does not exist',
             'type.in' => 'Type must be one of the following: car, motorcycle, truck, bus, other',
-            'plate.required' => 'Plate is required',
+            'vehicle_id.required' => 'Vehicle id is required',
+            'vehicle_id.exists' => 'Vehicle id does not exist',
         ];
     }
 }

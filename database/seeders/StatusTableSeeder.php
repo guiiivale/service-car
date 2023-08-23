@@ -30,6 +30,10 @@ class StatusTableSeeder extends Seeder
                 'name' => 'Canceled',
                 'description' => 'The appointment has been canceled.',
             ],
+            [
+                'name' => 'Waiting payment',
+                'description' => 'The appointment is waiting for payment.',
+            ]
         ];
 
         foreach ($statuses as $status) {

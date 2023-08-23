@@ -99,14 +99,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::find($data['id']);
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not found',
-            ], 404);
-        }
+        $user = $request->user;
 
         if (!Hash::check($data['password'], $user->password)) {
             return response()->json([
@@ -128,14 +121,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::find($data['id']);
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not found.',
-            ], 404);
-        }
+        $user = $request->user;
 
         $randomToken = Str::random(16);
         $user->reset_password_token = $randomToken;
