@@ -43,8 +43,13 @@ class Appointment extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function activities()
+    public function activity()
     {
         return $this->hasOne(UserActivityHistory::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
     }
 }

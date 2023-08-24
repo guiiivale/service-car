@@ -10,7 +10,7 @@ class UserActivityHistory extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'user_activity_histories';
+    protected $table = 'user_activity_history';
 
     protected $fillable = [
         'appointment_id',

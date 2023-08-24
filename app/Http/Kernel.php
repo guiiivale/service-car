@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'valid.company' => \App\Http\Middleware\EnsureValidCompany::class,
         'valid.vehicle' => \App\Http\Middleware\EnsureValidVehicle::class,
         'valid.service' => \App\Http\Middleware\EnsureValidService::class,
+        'valid.appointment' => \App\Http\Middleware\EnsureValidAppointment::class,
     ];
 }

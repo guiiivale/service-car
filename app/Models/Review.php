@@ -12,6 +12,7 @@ class Review extends Model
 
     protected $fillable = [
         'company_id',
+        'appointment_id',
         'user_id',
         'rating',
         'review',
@@ -31,5 +32,10 @@ class Review extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class);
     }
 }

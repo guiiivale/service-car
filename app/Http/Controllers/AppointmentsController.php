@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Enums\Status;
 use App\Models\Appointment;
 use App\Models\Status as ModelsStatus;
+use App\Models\UserActivityHistory;
 use Illuminate\Http\Request;
 
 class AppointmentsController extends Controller
@@ -24,20 +25,23 @@ class AppointmentsController extends Controller
 
         $service = $request->service;
 
-        $appointment = Appointment::create([
+        $status = ModelsStatus::find(Status::WAITING_PAYMENT_ID);
+
+        $appointment = new Appointment([
             'scheduled_datetime' => $data['scheduled_datetime'],
             'notes' => $data['notes'],
         ]);
-
-        $status = ModelsStatus::find(Status::WAITING_PAYMENT_ID);
-        
         $appointment->user()->associate($customer);
         $appointment->company()->associate($company);
         $appointment->vehicle()->associate($vehicle);
         $appointment->service()->associate($service);
         $appointment->status()->associate($status);
-        
         $appointment->save();
+
+        $activity = new UserActivityHistory();
+        $activity->appointment()->associate($appointment);
+        $activity->value = $service->pivot->value;
+        $activity->save();
 
         return response()->json([
             'success' => true,
@@ -50,14 +54,14 @@ class AppointmentsController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::find($data['user_id']);
+        $customer = $request->customer;
 
-        if(!$user) {
-            return response()->json([
-                'message' => 'User not found'
-            ], 404);
-        }
+        $appointments = $customer->userAppointments()->with(['company', 'vehicle', 'service', 'status', 'activity'])->get();
 
-        $appointments = $user->userAppointments()->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'Get user appointments success',
+            'appointments' => $appointments,
+        ]);
     }
 }

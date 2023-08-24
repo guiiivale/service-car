@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentsController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
@@ -40,15 +41,22 @@ Route::middleware('valid.user')->group(function () {
         });
 
         Route::middleware('valid.company')->group(function () {
-            Route::prefix('/review')->group(function () {
-                Route::post('/add', [ReviewController::class, 'add']);
+            Route::middleware('valid.appointment')->group(function () {
+                Route::prefix('/review')->group(function () {
+                    Route::post('/add', [ReviewController::class, 'add']);
+                });
             });
+
             Route::middleware('valid.vehicle', 'valid.service')->group(function () {
                 Route::prefix('/appointments')->group(function () {
+                    Route::post('/store', [AppointmentsController::class, 'store']);
                 });
             });
         });
 
+        Route::prefix('/appointments')->group(function () {
+            Route::get('/user', [AppointmentsController::class, 'userAppointments']);
+        });
     });
     
     Route::prefix('/user')->group(function () {
