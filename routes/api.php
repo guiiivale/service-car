@@ -73,6 +73,9 @@ Route::middleware('valid.company')->group(function () {
     Route::prefix('/review')->group(function () {
         Route::get('/get', [ReviewController::class, 'get']);
     });
+    Route::prefix('/appointments')->group(function () {
+        Route::get('/company', [AppointmentsController::class, 'companyAppointments']);
+    });
 });
 
 

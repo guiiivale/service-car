@@ -52,8 +52,6 @@ class AppointmentsController extends Controller
 
     public function userAppointments(GetUserAppointmentsRequest $request)
     {
-        $data = $request->validated();
-
         $customer = $request->customer;
 
         $appointments = $customer->userAppointments()->with(['company', 'vehicle', 'service', 'status', 'activity'])->get();
@@ -61,6 +59,19 @@ class AppointmentsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Get user appointments success',
+            'appointments' => $appointments,
+        ]);
+    }
+
+    public function companyAppointments(Request $request)
+    {
+        $company  = $request->company;
+
+        $appointments = $company->appointments()->with(['user', 'vehicle', 'service', 'status', 'activity'])->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Get company appointments success',
             'appointments' => $appointments,
         ]);
     }
